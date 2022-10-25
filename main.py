@@ -1,4 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from service.impl.parser import TFParser
+ 
 
 app = FastAPI()
 
@@ -8,6 +10,9 @@ async def root():
     return {"message": "api test"}
 
 
-@app.get("/api/v1/{path}")
-async def say_hello(path: str):
-    return {"message": f"api/{path}"}
+@app.get("/api/v1/")
+async def parse_terraform():
+    parser = TFParser()
+    f = parser.load_file()
+    res = parser.get_block_value(f)
+    return { "result" : res }
