@@ -1,8 +1,8 @@
 class Response():
     def __init__(
-        self, 
-        bid: str, 
-        label=None, 
+        self,
+        bid: str,
+        label=None,
         parent=None
     ) -> None:
         self.id = bid
