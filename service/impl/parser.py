@@ -15,12 +15,12 @@ class TFParser():
     ##
     # temp
     ##
-    def get_var(self, var: str) -> str:
-        
-        if var.startswith("$"):
-            return var[2:-1]
-        else:
-            return var
+    def get_var(self, var: list) -> str:
+        if var:
+            if var[0].startswith("$"):
+                return var[0][2:-1]
+            else:
+                return var[0]
 
     def get_block_value(self, file: dict) -> list:
         res = []
