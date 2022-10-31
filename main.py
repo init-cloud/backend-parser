@@ -9,7 +9,7 @@ async def root():
     return {"message": "api test"}
 
 
-@app.get("/api/v1/")
-async def parse_terraform():
-    res = api_parser()
+@app.get("/api/v1/{dir}")
+async def parse_terraform(dir: str) -> list: 
+    res = api_parser(dir)
     return res 

@@ -7,20 +7,26 @@ class TFParser():
     def __init__(self, block=dict()) -> None:
         self.block = block
 
-    def load_file(self) -> dict:
-        with open('static/main.tf', 'r') as tf:
+    def load_file(self, path: str) -> dict:
+        with open(f'uploads/{path}/main.tf', 'r') as tf:
             self.block = hcl2.load(tf)
             return self.block
 
     ##
     # temp
     ##
-    def get_var(self, var: list) -> str:
-        if var:
+    def get_var(self, var) -> str:
+        if isinstance(var, list) and var:
             if var[0].startswith("$"):
                 return var[0][2:-1]
             else:
                 return var[0]
+        elif isinstance(var, str):
+            if var.startswith("$"):
+                return var[2:-1]
+            else:
+                return var
+        return None
 
     def get_block_value(self, file: dict) -> list:
         res = []
@@ -33,9 +39,20 @@ class TFParser():
                     elif NCPResource.NCLOUD_SERVER in d:
                         res.append({ "data" : self.parse(d[NCPResource.NCLOUD_SERVER],
                                             b_type=NCPResource.NCLOUD_SERVER)[0]})
+                    elif NCPResource.NCLOUD_LB_TARGET_GROUP in d:
+                        res.append({ "data" : self.parse(d[NCPResource.NCLOUD_LB_TARGET_GROUP],
+                                            b_type=NCPResource.NCLOUD_LB_TARGET_GROUP)[0]})
+                    elif NCPResource.NCLOUD_ACCESS_CONTROL_GROUP in d:
+                        res.append({ "data" : self.parse(d[NCPResource.NCLOUD_ACCESS_CONTROL_GROUP],
+                                            b_type=NCPResource.NCLOUD_ACCESS_CONTROL_GROUP)[0]})
+                    elif NCPResource.NCLOUD_NETWORK_ACL in d:
+                        res.append({ "data" : self.parse(d[NCPResource.NCLOUD_NETWORK_ACL],
+                                            b_type=NCPResource.NCLOUD_NETWORK_ACL)[0]})
+                    elif NCPResource.NCLOUD_NETWORK_INTERFACE in d:
+                        res.append({ "data" : self.parse(d[NCPResource.NCLOUD_NETWORK_INTERFACE],
+                                            b_type=NCPResource.NCLOUD_NETWORK_INTERFACE)[0]})
                     else:
                         continue
-
         return res
 
     def parse(self, blocks, b_type=None) -> list:
@@ -46,11 +63,15 @@ class TFParser():
 
             if "subnet_no" in block:
                 result.append(
-                    Response(k, b_type, self.get_var(block["subnet_no"]))
+                    Response(k, b_type, parent=self.get_var(block["subnet_no"]))
                 )
             elif "vpc_no" in block:
                 result.append(
-                    Response(k, b_type, self.get_var(block["vpc_no"]))
+                    Response(k, b_type, parent=self.get_var(block["vpc_no"]))
                 )
-
+            elif "region" in block:
+                result.append(
+                    Response(k, b_type, parent=self.get_var(block["region"]))
+                )
+                
         return result

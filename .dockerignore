@@ -1,0 +1,3 @@
+.tfparser/
+__pycache__
+*.pyc
