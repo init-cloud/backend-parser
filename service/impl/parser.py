@@ -1,16 +1,24 @@
 from service.common.response_entity import Response
 from service.enum.blocks import Block, NCPResource
-import hcl2
+import os, hcl2
 
 
 class TFParser():
-    def __init__(self, block=dict()) -> None:
+    def __init__(self, block=[]) -> None:
         self.block = block
 
-    def load_file(self, path: str) -> dict:
-        with open(f'uploads/{path}/main.tf', 'r') as tf:
-            self.block = hcl2.load(tf)
-            return self.block
+    def load_file(self, path: str) -> list:
+        for (root, directories, files) in os.walk(f'uploads/{path}/'):
+            for file in files:
+                file_path = os.path.join(root, file)
+                if file_path[-3:] != ".tf":
+                    continue
+
+                with open(file_path, 'r') as tf:
+                    fs = hcl2.load(tf)
+                    self.block.append(fs)
+        
+        return self.block
 
     ##
     # temp
@@ -28,31 +36,32 @@ class TFParser():
                 return var
         return None
 
-    def get_block_value(self, file: dict) -> list:
+    def get_block_value(self, files: list) -> list:
         res = []
-        for k in file.keys():
-            if k == Block.RESOURCE:
-                for d in file[k]:
-                    if NCPResource.NCLOUD_SUBNET in d:
-                        res.append({ "data" : self.parse(d[NCPResource.NCLOUD_SUBNET],
-                                            b_type=NCPResource.NCLOUD_SUBNET)[0]})
-                    elif NCPResource.NCLOUD_SERVER in d:
-                        res.append({ "data" : self.parse(d[NCPResource.NCLOUD_SERVER],
-                                            b_type=NCPResource.NCLOUD_SERVER)[0]})
-                    elif NCPResource.NCLOUD_LB_TARGET_GROUP in d:
-                        res.append({ "data" : self.parse(d[NCPResource.NCLOUD_LB_TARGET_GROUP],
-                                            b_type=NCPResource.NCLOUD_LB_TARGET_GROUP)[0]})
-                    elif NCPResource.NCLOUD_ACCESS_CONTROL_GROUP in d:
-                        res.append({ "data" : self.parse(d[NCPResource.NCLOUD_ACCESS_CONTROL_GROUP],
-                                            b_type=NCPResource.NCLOUD_ACCESS_CONTROL_GROUP)[0]})
-                    elif NCPResource.NCLOUD_NETWORK_ACL in d:
-                        res.append({ "data" : self.parse(d[NCPResource.NCLOUD_NETWORK_ACL],
-                                            b_type=NCPResource.NCLOUD_NETWORK_ACL)[0]})
-                    elif NCPResource.NCLOUD_NETWORK_INTERFACE in d:
-                        res.append({ "data" : self.parse(d[NCPResource.NCLOUD_NETWORK_INTERFACE],
-                                            b_type=NCPResource.NCLOUD_NETWORK_INTERFACE)[0]})
-                    else:
-                        continue
+        for file in files:
+            for k in file.keys():
+                if k == Block.RESOURCE:
+                    for d in file[k]:
+                        if NCPResource.NCLOUD_SUBNET in d:
+                            res.append({ "data" : self.parse(d[NCPResource.NCLOUD_SUBNET],
+                                                b_type=NCPResource.NCLOUD_SUBNET)[0]})
+                        elif NCPResource.NCLOUD_SERVER in d:
+                            res.append({ "data" : self.parse(d[NCPResource.NCLOUD_SERVER],
+                                                b_type=NCPResource.NCLOUD_SERVER)[0]})
+                        elif NCPResource.NCLOUD_LB_TARGET_GROUP in d:
+                            res.append({ "data" : self.parse(d[NCPResource.NCLOUD_LB_TARGET_GROUP],
+                                                b_type=NCPResource.NCLOUD_LB_TARGET_GROUP)[0]})
+                        elif NCPResource.NCLOUD_ACCESS_CONTROL_GROUP in d:
+                            res.append({ "data" : self.parse(d[NCPResource.NCLOUD_ACCESS_CONTROL_GROUP],
+                                                b_type=NCPResource.NCLOUD_ACCESS_CONTROL_GROUP)[0]})
+                        elif NCPResource.NCLOUD_NETWORK_ACL in d:
+                            res.append({ "data" : self.parse(d[NCPResource.NCLOUD_NETWORK_ACL],
+                                                b_type=NCPResource.NCLOUD_NETWORK_ACL)[0]})
+                        elif NCPResource.NCLOUD_NETWORK_INTERFACE in d:
+                            res.append({ "data" : self.parse(d[NCPResource.NCLOUD_NETWORK_INTERFACE],
+                                                b_type=NCPResource.NCLOUD_NETWORK_INTERFACE)[0]})
+                        else:
+                            continue
         return res
 
     def parse(self, blocks, b_type=None) -> list:
