@@ -49,7 +49,7 @@ class BaseParser():
     ) -> str:
         if type == Block.DATA:
             return va[1] + "." + va[2]
-        elif type == Block.VARIABLE:
+        elif type == Block.VARIABLE or type == "var":
             return va[1]
         else:
             result = (va[0] + "." + va[1]).split("[")

@@ -18,10 +18,11 @@ class TFParser(BaseParser):
 
                 with open(file_path, 'r') as tf:
                     fs = hcl2.load(tf)
+
                     self.add(
-                        data=fs[Block.DATA],
-                        resource=fs[Block.RESOURCE],
-                        variable=fs[Block.VARIABLE])
+                        data=fs[Block.DATA] if Block.DATA in fs else [],
+                        resource=fs[Block.RESOURCE] if Block.RESOURCE in fs else [],
+                        variable=fs[Block.VARIABLE] if Block.VARIABLE in fs else [])
 
                     self.block.append(fs)
 
@@ -58,43 +59,66 @@ class TFParser(BaseParser):
             for k in file.keys():
                 if k == Block.RESOURCE:
                     for d in file[k]:
+
                         if NCPResource.NCLOUD_SUBNET in d:
-                            result.append({ "data" : self.parse(d[NCPResource.NCLOUD_SUBNET],
-                                                b_type=NCPResource.NCLOUD_SUBNET)[0]})
+                            b_s = self.parse(d[NCPResource.NCLOUD_SUBNET],
+                                                b_type=NCPResource.NCLOUD_SUBNET)
+                            if b_s:
+                                result.append({"data": b_s[0]})
                         elif NCPResource.NCLOUD_SERVER in d:
-                            result.append({ "data" : self.parse(d[NCPResource.NCLOUD_SERVER],
-                                                b_type=NCPResource.NCLOUD_SERVER)[0]})
+                            b_s = self.parse(d[NCPResource.NCLOUD_SERVER],
+                                                b_type=NCPResource.NCLOUD_SERVER)
+                            if b_s:
+                                result.append({"data": b_s[0]})
                         elif NCPResource.NCLOUD_LB_TARGET_GROUP in d:
-                            result.append({ "data" : self.parse(d[NCPResource.NCLOUD_LB_TARGET_GROUP],
-                                                b_type=NCPResource.NCLOUD_LB_TARGET_GROUP)[0]})
+                            b_s = self.parse(d[NCPResource.NCLOUD_LB_TARGET_GROUP],
+                                                b_type=NCPResource.NCLOUD_LB_TARGET_GROUP)
+                            if b_s:
+                                result.append({"data": b_s[0]})
                         elif NCPResource.NCLOUD_ACCESS_CONTROL_GROUP in d:
-                            result.append({ "data" : self.parse(d[NCPResource.NCLOUD_ACCESS_CONTROL_GROUP],
-                                                b_type=NCPResource.NCLOUD_ACCESS_CONTROL_GROUP)[0]})
+                            b_s = self.parse(d[NCPResource.NCLOUD_ACCESS_CONTROL_GROUP],
+                                                b_type=NCPResource.NCLOUD_ACCESS_CONTROL_GROUP)
+                            if b_s:
+                                result.append({"data": b_s[0]})
                         elif NCPResource.NCLOUD_NETWORK_ACL in d:
-                            result.append({ "data" : self.parse(d[NCPResource.NCLOUD_NETWORK_ACL],
-                                                b_type=NCPResource.NCLOUD_NETWORK_ACL)[0]})
+                            b_s = self.parse(d[NCPResource.NCLOUD_NETWORK_ACL],
+                                                b_type=NCPResource.NCLOUD_NETWORK_ACL)
+                            if b_s:
+                                result.append({"data": b_s[0]})
                         elif NCPResource.NCLOUD_NETWORK_INTERFACE in d:
-                            result.append({ "data" : self.parse(d[NCPResource.NCLOUD_NETWORK_INTERFACE],
-                                                b_type=NCPResource.NCLOUD_NETWORK_INTERFACE)[0]})
+                            b_s = self.parse(d[NCPResource.NCLOUD_NETWORK_INTERFACE],
+                                                b_type=NCPResource.NCLOUD_NETWORK_INTERFACE)
+                            if b_s:
+                                result.append({"data": b_s[0]})
+                        elif NCPResource.NCLOUD_VPC in d:
+                            b_s = self.parse(d[NCPResource.NCLOUD_VPC],
+                                                b_type=NCPResource.NCLOUD_VPC)
+                            if b_s:
+                                result.append({"data": b_s[0]})
                         else:
                             continue
 
         return result
 
-    def parse(self, blocks: dict, b_type=None) -> list:
+    def parse(self, blocks: dict, b_type: str=None) -> list:
         result = []
 
         for k in blocks.keys():
             block = blocks[k]
 
+            id = b_type + "." + k
             if "subnet_no" in block:
                 result.append(
-                    Response(k, b_type, parent=self.get_value(self.get_var(block["subnet_no"]))))
+                    Response(bid=id, label=b_type, parent=self.get_value(self.get_var(block["subnet_no"]))))
             elif "vpc_no" in block:
                 result.append(
-                    Response(k, b_type, parent=self.get_value(self.get_var(block["vpc_no"]))))
+                    Response(bid=id, label=b_type, parent=self.get_value(self.get_var(block["vpc_no"]))))
             elif "region" in block:
                 result.append(
-                    Response(k, b_type, parent=self.get_value(self.get_var(block["region"]))))
+                    Response(bid=id, label=b_type, parent=self.get_value(self.get_var(block["region"]))))
+            else:
+                result.append(
+                    Response(bid=id, label=b_type, parent=None))
+
 
         return result
