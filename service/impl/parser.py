@@ -77,6 +77,8 @@ class TFParser(BaseParser):
                         elif NCPResource.NCLOUD_ACCESS_CONTROL_GROUP in d:
                             b_s = self.parse(d[NCPResource.NCLOUD_ACCESS_CONTROL_GROUP],
                                                 b_type=NCPResource.NCLOUD_ACCESS_CONTROL_GROUP)
+                            if b_s:
+                                result.append({"data": b_s[0]})
                         elif NCPResource.NCLOUD_AUTO_SCALING_GROUP in d:
                             b_s = self.parse(d[NCPResource.NCLOUD_AUTO_SCALING_GROUP],
                                                 b_type=NCPResource.NCLOUD_AUTO_SCALING_GROUP)
@@ -97,11 +99,11 @@ class TFParser(BaseParser):
                                                 b_type=NCPResource.NCLOUD_VPC)
                             if b_s:
                                 result.append({"data": b_s[0]})
-                        # elif NCPResource.NCLOUD_VPC_PEERING in d:
-                        #     b_s = self.peering_parse(d[NCPResource.NCLOUD_VPC_PEERING],
-                        #                         b_type=NCPResource.NCLOUD_VPC_PEERING)
-                        #     if b_s:
-                        #         peer_result.append({"data": b_s[0]})
+                        elif NCPResource.NCLOUD_VPC_PEERING in d:
+                            b_s = self.peering_parse(d[NCPResource.NCLOUD_VPC_PEERING],
+                                                b_type=NCPResource.NCLOUD_VPC_PEERING)
+                            if b_s:
+                                result.append({"data": b_s[0]})
                         else:
                             continue
 
@@ -112,12 +114,15 @@ class TFParser(BaseParser):
 
         for k in blocks.keys():
             block = blocks[k]
+
+            id = b_type + "." + k
+
             if "source_vpc_no" in block and "target_vpc_no" in block:
                 src=self.get_value(self.get_var(block["source_vpc_no"]))
                 tar=self.get_value(self.get_var(block["target_vpc_no"]))
 
                 result.append(
-                    PeeringResponse(bid=id, label=b_type, src=src, tar=tar))
+                    PeeringResponse(bid=id, source=src, target=tar))
         
         return result
 
