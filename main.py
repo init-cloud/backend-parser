@@ -12,4 +12,5 @@ async def root():
 @app.get("/api/v1/{dir}")
 async def parse_terraform(dir: str) -> list: 
     res = api_parser(dir)
+
     return res 

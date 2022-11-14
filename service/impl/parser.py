@@ -1,5 +1,5 @@
 from service.base_parser import BaseParser
-from service.common.response_entity import Response
+from service.common.response_entity import Response, PeeringResponse
 from service.enum.blocks import Block, NCPResource
 import os, hcl2
 
@@ -53,13 +53,12 @@ class TFParser(BaseParser):
         return None
 
     def get_block_value(self, files: list) -> list:
-        result = []
+        result, peer_result = [], []
 
         for file in files:
             for k in file.keys():
                 if k == Block.RESOURCE:
                     for d in file[k]:
-
                         if NCPResource.NCLOUD_SUBNET in d:
                             b_s = self.parse(d[NCPResource.NCLOUD_SUBNET],
                                                 b_type=NCPResource.NCLOUD_SUBNET)
@@ -78,6 +77,9 @@ class TFParser(BaseParser):
                         elif NCPResource.NCLOUD_ACCESS_CONTROL_GROUP in d:
                             b_s = self.parse(d[NCPResource.NCLOUD_ACCESS_CONTROL_GROUP],
                                                 b_type=NCPResource.NCLOUD_ACCESS_CONTROL_GROUP)
+                        elif NCPResource.NCLOUD_AUTO_SCALING_GROUP in d:
+                            b_s = self.parse(d[NCPResource.NCLOUD_AUTO_SCALING_GROUP],
+                                                b_type=NCPResource.NCLOUD_AUTO_SCALING_GROUP)
                             if b_s:
                                 result.append({"data": b_s[0]})
                         elif NCPResource.NCLOUD_NETWORK_ACL in d:
@@ -95,9 +97,28 @@ class TFParser(BaseParser):
                                                 b_type=NCPResource.NCLOUD_VPC)
                             if b_s:
                                 result.append({"data": b_s[0]})
+                        # elif NCPResource.NCLOUD_VPC_PEERING in d:
+                        #     b_s = self.peering_parse(d[NCPResource.NCLOUD_VPC_PEERING],
+                        #                         b_type=NCPResource.NCLOUD_VPC_PEERING)
+                        #     if b_s:
+                        #         peer_result.append({"data": b_s[0]})
                         else:
                             continue
 
+        return result
+
+    def peering_parse(self, blocks: dict, b_type: str=None ) -> list:
+        result = []
+
+        for k in blocks.keys():
+            block = blocks[k]
+            if "source_vpc_no" in block and "target_vpc_no" in block:
+                src=self.get_value(self.get_var(block["source_vpc_no"]))
+                tar=self.get_value(self.get_var(block["target_vpc_no"]))
+
+                result.append(
+                    PeeringResponse(bid=id, label=b_type, src=src, tar=tar))
+        
         return result
 
     def parse(self, blocks: dict, b_type: str=None) -> list:
@@ -107,6 +128,7 @@ class TFParser(BaseParser):
             block = blocks[k]
 
             id = b_type + "." + k
+
             if "subnet_no" in block:
                 result.append(
                     Response(bid=id, label=b_type, parent=self.get_value(self.get_var(block["subnet_no"]))))
