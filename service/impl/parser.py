@@ -69,11 +69,6 @@ class TFParser(BaseParser):
                                                 b_type=NCPResource.NCLOUD_SERVER)
                             if b_s:
                                 result.append({"data": b_s[0]})
-                        elif NCPResource.NCLOUD_LB_TARGET_GROUP in d:
-                            b_s = self.parse(d[NCPResource.NCLOUD_LB_TARGET_GROUP],
-                                                b_type=NCPResource.NCLOUD_LB_TARGET_GROUP)
-                            if b_s:
-                                result.append({"data": b_s[0]})
                         elif NCPResource.NCLOUD_ACCESS_CONTROL_GROUP in d:
                             b_s = self.parse(d[NCPResource.NCLOUD_ACCESS_CONTROL_GROUP],
                                                 b_type=NCPResource.NCLOUD_ACCESS_CONTROL_GROUP)
