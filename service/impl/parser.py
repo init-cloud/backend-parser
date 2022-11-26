@@ -73,6 +73,7 @@ class TFParser(BaseParser):
 
     def retrieve_ncp_resource(self, file_data) -> list:
         result = []
+        multi_list = []
 
         for d in file_data:
             resource = next(iter(d))
@@ -83,6 +84,8 @@ class TFParser(BaseParser):
                     b_s = self.connect_parse(d[val[0]])
                     if b_s:
                         result.append({"data": b_s[0]})
+                elif val[1] == "multiconnect":
+                    multi_list.append((d[val[0]], val[0]))
                 else:
                     b_s = self.parse(d[val[0]], b_type=val[0])
                     if b_s:
@@ -92,7 +95,7 @@ class TFParser(BaseParser):
                 if b_s:
                     result.append({"data": b_s[0]})
 
-        return result
+        return result + self.multi_connect_parse(multi_list)
 
     def retrieve_aws(self):
         return
@@ -144,37 +147,40 @@ class TFParser(BaseParser):
     def connect_parse(self, blocks: dict) -> list:
         result = []
 
-        if isinstance(blocks, dict):
-            for k in blocks.keys():
-                block = blocks[k]
+        for k in blocks.keys():
+            block = blocks[k]
 
-                if "source_vpc_no" in block and "target_vpc_no" in block:
-                    src=self.get_value(self.get_var(block["source_vpc_no"]))
-                    tar=self.get_value(self.get_var(block["target_vpc_no"]))
-                    id = src + "-" + tar
-                    result.append(
-                        PeeringResponse(bid=id, source=src, target=tar))
-        
-        elif isinstance(blocks, list):
-            for lb_blocks, lb_type in blocks:
-                for k in lb_blocks:    
-                    block = lb_blocks[k]
+            if "source_vpc_no" in block and "target_vpc_no" in block:
+                src=self.get_value(self.get_var(block["source_vpc_no"]))
+                tar=self.get_value(self.get_var(block["target_vpc_no"]))
+                id = src + "-" + tar
+                result.append(
+                    PeeringResponse(bid=id, source=src, target=tar))
 
-                    if "load_balancer_no" in block and "target_group_no" in block:
-                        
-                        src=self.get_value(self.get_var(block["load_balancer_no"]))
-                        tar=self.get_value(self.get_var(block["target_group_no"]))
+        return result
+    
+    def multi_connect_parse(self, block_list: list) -> list:
+        result = []
+            
+        for lb_blocks, lb_type in block_list:
+            for k in lb_blocks:    
+                block = lb_blocks[k]
+
+                if "load_balancer_no" in block and "target_group_no" in block:
+                    
+                    src=self.get_value(self.get_var(block["load_balancer_no"]))
+                    tar=self.get_value(self.get_var(block["target_group_no"]))
+                    id = lb_type + "-" + tar
+                    result.append({"data": PeeringResponse(bid=id, source=src, target=tar)})
+
+                elif "target_group_no" in block and "target_no_list" in block:
+
+                    for t in self.get_var_list(block["target_no_list"]):
+                        src=self.get_value(self.get_var(block["target_group_no"]))
+                        tar=self.get_value(t)
                         id = lb_type + "-" + tar
                         result.append({"data": PeeringResponse(bid=id, source=src, target=tar)})
-
-                    elif "target_group_no" in block and "target_no_list" in block:
-
-                        for t in self.get_var_list(block["target_no_list"]):
-                            src=self.get_value(self.get_var(block["target_group_no"]))
-                            tar=self.get_value(t)
-                            id = lb_type + "-" + tar
-                            result.append({"data": PeeringResponse(bid=id, source=src, target=tar)})
-                    else:
-                        continue
-
+                else:
+                    continue
+        
         return result
