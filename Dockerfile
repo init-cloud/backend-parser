@@ -7,7 +7,6 @@ COPY ./dependencies.py /app/
 COPY ./requirements.txt /app/
 COPY ./exception/ /app/exception/
 COPY ./service/ /app/service/
-COPY ./static/ /app/static
 COPY ./routers /app/routers
 
 RUN pip install -r requirements.txt

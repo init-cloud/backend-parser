@@ -1,11 +1,13 @@
 from service.base_parser import BaseParser
 from service.common.response_entity import Response, PeeringResponse
-from service.enum.blocks import Block, NCPResource
+from service.enum.blocks import Block, NCPResource, AWSResource
+from service.enum.blocks_tuple import NCPResourceTuple, AWSResourceTuple
 from service.utils.network_attach import Attach
 import os, hcl2
 
 
 class TFParser(BaseParser):
+
     def __init__(self, block=[]) -> None:
         self.block = block
         super().__init__()
@@ -30,13 +32,16 @@ class TFParser(BaseParser):
         return self.block
 
     def get_value(self, var: str) -> str:
+
         v = var.split(".")
 
         if not v:
             return None
-        
-        result = self.find(v, v[0])
 
+        if v[0] == 'var':
+            return var
+            
+        result = self.find(v, v[0])
         return result
 
     def get_var(self, var) -> str:
@@ -66,77 +71,50 @@ class TFParser(BaseParser):
 
         return result
 
+    def retrieve_ncp_resource(self, file_data) -> list:
+        result = []
+
+        for d in file_data:
+            resource = next(iter(d))
+            try:
+                val = NCPResourceTuple[resource.upper()].value
+
+                if val[1] == "connect":
+                    b_s = self.connect_parse(d[val[0]])
+                    if b_s:
+                        result.append({"data": b_s[0]})
+                else:
+                    b_s = self.parse(d[val[0]], b_type=val[0])
+                    if b_s:
+                        result.append({"data": b_s[0]})
+            except:
+                b_s = self.parse(d[resource], b_type=resource)
+                if b_s:
+                    result.append({"data": b_s[0]})
+
+        return result
+
+    def retrieve_aws(self):
+        return
+
     def get_block_value(self, files: list) -> list:
-        result, lb_list = [], []
+        result = []
 
         for file in files:
             for k in file.keys():
                 if k == Block.RESOURCE:
-                    for d in file[k]:
-                        if NCPResource.NCLOUD_SUBNET in d:
-                            b_s = self.parse(d[NCPResource.NCLOUD_SUBNET],
-                                                b_type=NCPResource.NCLOUD_SUBNET)
-                            if b_s:
-                                result.append({"data": b_s[0]})
-                        elif NCPResource.NCLOUD_SERVER in d:
-                            b_s = self.parse(d[NCPResource.NCLOUD_SERVER],
-                                                b_type=NCPResource.NCLOUD_SERVER)
-                            if b_s:
-                                result.append({"data": b_s[0]})
-                        elif NCPResource.NCLOUD_ACCESS_CONTROL_GROUP in d:
-                            b_s = self.parse(d[NCPResource.NCLOUD_ACCESS_CONTROL_GROUP],
-                                                b_type=NCPResource.NCLOUD_ACCESS_CONTROL_GROUP)
-                            if b_s:
-                                result.append({"data": b_s[0]})
-                        elif NCPResource.NCLOUD_AUTO_SCALING_GROUP in d:
-                            b_s = self.parse(d[NCPResource.NCLOUD_AUTO_SCALING_GROUP],
-                                                b_type=NCPResource.NCLOUD_AUTO_SCALING_GROUP)
-                            if b_s:
-                                result.append({"data": b_s[0]})
-                        elif NCPResource.NCLOUD_NETWORK_ACL in d:
-                            b_s = self.parse(d[NCPResource.NCLOUD_NETWORK_ACL],
-                                                b_type=NCPResource.NCLOUD_NETWORK_ACL)
-                            if b_s:
-                                result.append({"data": b_s[0]})
-                        elif NCPResource.NCLOUD_NETWORK_INTERFACE in d:
-                            b_s = self.parse(d[NCPResource.NCLOUD_NETWORK_INTERFACE],
-                                                b_type=NCPResource.NCLOUD_NETWORK_INTERFACE)
-                            if b_s:
-                                result.append({"data": b_s[0]})
-                        elif NCPResource.NCLOUD_VPC in d:
-                            b_s = self.parse(d[NCPResource.NCLOUD_VPC],
-                                                b_type=NCPResource.NCLOUD_VPC)
-                            if b_s:
-                                result.append({"data": b_s[0]})
-                        elif NCPResource.NCLOUD_LB_TARGET_GROUP in d:
-                            b_s = self.parse(d[NCPResource.NCLOUD_LB_TARGET_GROUP],
-                                                b_type=NCPResource.NCLOUD_LB_TARGET_GROUP)
-                            if b_s:
-                                result.append({"data": b_s[0]})
-                        elif NCPResource.NCLOUD_LB in d:
-                            b_s = self.parse(d[NCPResource.NCLOUD_LB],
-                                                b_type=NCPResource.NCLOUD_LB)
-                            if b_s:
-                                result.append({"data": b_s[0]})
-                        elif NCPResource.NCLOUD_VPC_PEERING in d:
-                            b_s = self.peering_parse(d[NCPResource.NCLOUD_VPC_PEERING],
-                                                b_type=NCPResource.NCLOUD_VPC_PEERING)
-                            if b_s:
-                                result.append({"data": b_s[0]})
-                        elif NCPResource.NCLOUD_LB_LISTENER in d:
-                            lb_list.append((d[NCPResource.NCLOUD_LB_LISTENER], 
-                                        NCPResource.NCLOUD_LB_LISTENER))
-                        elif NCPResource.NCLOUD_LB_TARGET_GROUP_ATTACHMENT in d:
-                            lb_list.append((d[NCPResource.NCLOUD_LB_TARGET_GROUP_ATTACHMENT], 
-                                        NCPResource.NCLOUD_LB_TARGET_GROUP_ATTACHMENT))
-                        else:
-                            continue
-        
-        result += self.lb_parse(lb_list)
+                    result += self.retrieve_ncp_resource(file[k])
+                elif k == Block.PROVIDER:
+                    provider = next(iter(file[k][0]))
+                    b_s = self.parse(file[k][0], provider)
+                    if b_s:
+                        result.append({"data": b_s[0]})
+                else:
+                    continue
 
         return result
 
-    def parse(self, blocks: dict, b_type: str=None) -> list:
+    def parse(self, blocks: dict, b_type: str=None, default_parent: str=None) -> list:
         result = []
 
         for k in blocks.keys():
@@ -158,50 +136,45 @@ class TFParser(BaseParser):
                     Response(bid=id, label=b_type, parent=self.get_value(self.get_var(block["region"]))))
             else:
                 result.append(
-                    Response(bid=id, label=b_type, parent=None))
+                    Response(bid=id, label=b_type, parent=default_parent))
 
 
         return result
 
-    def peering_parse(self, blocks: dict, b_type: str=None) -> list:
+    def connect_parse(self, blocks: dict) -> list:
         result = []
 
-        for k in blocks.keys():
-            block = blocks[k]
+        if isinstance(blocks, dict):
+            for k in blocks.keys():
+                block = blocks[k]
 
-            if "source_vpc_no" in block and "target_vpc_no" in block:
-                src=self.get_value(self.get_var(block["source_vpc_no"]))
-                tar=self.get_value(self.get_var(block["target_vpc_no"]))
-                id = src + "-" + tar
-                result.append(
-                    PeeringResponse(bid=id, source=src, target=tar))
+                if "source_vpc_no" in block and "target_vpc_no" in block:
+                    src=self.get_value(self.get_var(block["source_vpc_no"]))
+                    tar=self.get_value(self.get_var(block["target_vpc_no"]))
+                    id = src + "-" + tar
+                    result.append(
+                        PeeringResponse(bid=id, source=src, target=tar))
         
-        return result
+        elif isinstance(blocks, list):
+            for lb_blocks, lb_type in blocks:
+                for k in lb_blocks:    
+                    block = lb_blocks[k]
 
-    def lb_parse(self, lb_block_list: list) -> list:
-        result = []
-
-        for lb_blocks, lb_type in lb_block_list:
-            for k in lb_blocks:    
-                block = lb_blocks[k]
-
-                if "load_balancer_no" in block and "target_group_no" in block:
-                    
-                    src=self.get_value(self.get_var(block["load_balancer_no"]))
-                    tar=self.get_value(self.get_var(block["target_group_no"]))
-                    id = lb_type + "-" + tar
-                    result.append({"data": PeeringResponse(bid=id, source=src, target=tar)})
-
-                elif "target_group_no" in block and "target_no_list" in block:
-
-                    for t in self.get_var_list(block["target_no_list"]):
-                        src=self.get_value(self.get_var(block["target_group_no"]))
-                        tar=self.get_value(t)
+                    if "load_balancer_no" in block and "target_group_no" in block:
+                        
+                        src=self.get_value(self.get_var(block["load_balancer_no"]))
+                        tar=self.get_value(self.get_var(block["target_group_no"]))
                         id = lb_type + "-" + tar
                         result.append({"data": PeeringResponse(bid=id, source=src, target=tar)})
-                else:
-                    continue
 
-        #attach = Attach(result, dict())
+                    elif "target_group_no" in block and "target_no_list" in block:
+
+                        for t in self.get_var_list(block["target_no_list"]):
+                            src=self.get_value(self.get_var(block["target_group_no"]))
+                            tar=self.get_value(t)
+                            id = lb_type + "-" + tar
+                            result.append({"data": PeeringResponse(bid=id, source=src, target=tar)})
+                    else:
+                        continue
 
         return result

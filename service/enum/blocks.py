@@ -15,6 +15,7 @@ class Provider(str, Enum):
     NCP = "ncloud"
 
 class NCPResource(str, Enum):
+    
     NCLOUD_ACCESS_CONTROL_GROUP = "ncloud_access_control_group"
     NCLOUD_ACCESS_CONTROL_GROUP_RULE = "ncloud_access_control_group_rule"
     NCLOUD_AUTO_SCALING_GROUP = "ncloud_auto_scaling_group"
@@ -2204,6 +2205,6 @@ class AWSData(str, Enum):
     AWS_WORKSPACES_IMAGE = "aws_workspaces_image"
     AWS_WORKSPACES_WORKSPACE = "aws_workspaces_workspace"
 
+
     # X-Ray
 
-print(AWSResource)
