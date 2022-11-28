@@ -1220,7 +1220,7 @@ class AWSResourceTuple(tuple, Enum):
     AWS_VPC_ENDPOINT_SUBNET_ASSOCIATION = ("aws_vpc_endpoint_subnet_association", "connect")
     AWS_VPC_IPV4_CIDR_BLOCK_ASSOCIATION = ("aws_vpc_ipv4_cidr_block_association", "node")
     AWS_VPC_IPV6_CIDR_BLOCK_ASSOCIATION = ("aws_vpc_ipv6_cidr_block_association", "node")
-    AWS_VPC_PEERING_CONNECTION = ("aws_vpc_peering_connection", "node")
+    AWS_VPC_PEERING_CONNECTION = ("aws_vpc_peering_connection", "connect")
     AWS_VPC_PEERING_CONNECTION_ACCEPTER = ("aws_vpc_peering_connection_accepter", "connect")
     AWS_VPC_PEERING_CONNECTION_OPTIONS = ("aws_vpc_peering_connection_options", "node")
     # VPC IPAM (IP Address Manager)

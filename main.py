@@ -6,11 +6,11 @@ app = FastAPI()
 
 @app.get("/")
 async def root():
-    return {"message": "api test"}
+    return {"state": "Parser on."}
 
 
-@app.get("/api/v1/{dir}")
-async def parse_terraform(dir: str) -> list: 
-    res = api_parser(dir)
+@app.get("/api/v1/{provider}/{dir}")
+async def parse_terraform(dir: str, provider: str) -> list: 
+    res = api_parser(dir, provider=provider)
 
     return res 
