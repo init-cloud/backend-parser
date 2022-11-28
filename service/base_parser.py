@@ -47,10 +47,13 @@ class BaseParser():
         va: list,
         type: str=None
     ) -> str:
+
         if type == Block.DATA:
             return va[1] + "." + va[2]
         elif type == Block.VARIABLE or type == "var":
             return va[1]
-        else:
+        elif len(va) > 1:
             result = (va[0] + "." + va[1]).split("[")
             return result[0]
+        else:
+            return va[0]
