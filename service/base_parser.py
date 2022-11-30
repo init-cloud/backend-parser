@@ -41,19 +41,3 @@ class BaseParser():
         self.resource += resource
         self.terraform += terraform
         self.variable += variable
-
-    def find(
-        self,
-        va: list,
-        type: str=None
-    ) -> str:
-
-        if type == Block.DATA:
-            return va[1] + "." + va[2]
-        elif type == Block.VARIABLE or type == "var":
-            return va[1]
-        elif len(va) > 1:
-            result = (va[0] + "." + va[1]).split("[")
-            return result[0]
-        else:
-            return va[0]

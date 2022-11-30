@@ -6,12 +6,12 @@ from service.utils.network_attach import Attach
 import os, hcl2
 
 
-class TFParser(BaseParser):
+class TFParser():
 
-    def __init__(self, path: str, block: list=[]) -> None:
-        self.block = block
+    def __init__(self, path: str, directory: str="/", raw_block: list=[]) -> None:
+        self.directory = directory
+        self.raw_block = raw_block
         self.path = path
-        super().__init__()
 
     def load_file(self) -> list:
         for (root, directories, files) in os.walk(f'uploads/{self.path}/'):
@@ -22,17 +22,11 @@ class TFParser(BaseParser):
 
                 with open(file_path, 'r') as tf:
                     fs = hcl2.load(tf)
+                    self.raw_block.append((root.split(self.path)[1], fs))
 
-                    self.add(
-                        data=fs[Block.DATA] if Block.DATA in fs else [],
-                        resource=fs[Block.RESOURCE] if Block.RESOURCE in fs else [],
-                        variable=fs[Block.VARIABLE] if Block.VARIABLE in fs else [])
+        return self.raw_block
 
-                    self.block.append(fs)
-
-        return self.block
-
-    def get_value(self, var: str) -> str:
+    def get_value(self, var: str, file_path: str="/") -> str:
 
         v = var.split(".")
 
@@ -43,7 +37,10 @@ class TFParser(BaseParser):
             return var
             
         result = self.find(v, v[0])
-        return result
+
+        return file_path + "\n" + result
+
+        
 
     def get_var(self, var) -> str:
         if isinstance(var, list) and var:
@@ -71,3 +68,17 @@ class TFParser(BaseParser):
                 result.append(v)
 
         return result
+
+    def find(self, va: list, type: str=None) -> str:
+
+        if type == Block.DATA:
+            return va[1] + "." + va[2]
+        elif type == Block.VARIABLE or type == "var":
+            return va[1]
+        elif len(va) > 1:
+            result = (va[0] + "." + va[1]).split("[")
+            return result[0]
+        elif va:
+            return va[0]
+        
+        return va
