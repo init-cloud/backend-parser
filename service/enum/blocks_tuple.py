@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class NCPResourceTuple(Enum):
     NCLOUD_ACCESS_CONTROL_GROUP = ("ncloud_access_control_group", "node")
     NCLOUD_ACCESS_CONTROL_GROUP_RULE = ("ncloud_access_control_group_rule", "node")
@@ -41,6 +42,81 @@ class NCPResourceTuple(Enum):
     NCLOUD_SUBNET = ("ncloud_subnet", "node")
     NCLOUD_VPC = ("ncloud_vpc", "node")
     NCLOUD_VPC_PEERING = ("ncloud_vpc_peering", "connect")
+
+
+class NCPDataTupe(tuple, Enum):
+    NCLOUD_ACCESS_CONTROL_GROUP = ("ncloud_access_control_group", "node")
+    NCLOUD_ACCESS_CONTROL_GROUP_RULE = ("ncloud_access_control_group_rule", "node")
+    NCLOUD_AUTO_SCALING_GROUP = ("ncloud_auto_scaling_group", "node")
+    NCLOUD_AUTO_SCALING_POLICY = ("ncloud_auto_scaling_policy", "node")
+    NCLOUD_AUTO_SCALING_SCHEDULE = ("ncloud_auto_scaling_schedule", "node")
+    NCLOUD_BLOCK_STORAGE = ("ncloud_block_storage", "node")
+    NCLOUD_BLOCK_STORAGE_SNAPSHOT = ("ncloud_block_storage_snapshot", "node")
+    NCLOUD_INIT_SCRIPT = ("ncloud_init_script", "node")
+    NCLOUD_LAUNCH_CONFIGURATION = ("ncloud_launch_configuration", "node")
+    NCLOUD_LB = ("ncloud_lb", "node")
+    NCLOUD_LB_LISTENER = ("ncloud_lb_listener", "multiconnect")
+    NCLOUD_LB_TARGET_GROUP = ("ncloud_lb_target_group", "node")
+    NCLOUD_LB_TARGET_GROUP_ATTACHMENT = ("ncloud_lb_target_group_attachment", "multiconnect")
+    NCLOUD_LOAD_BALANCER = ("nclound_load_balancer", "node")
+    NCLOUD_LOAD_BALANCER_SSL_CERTIFICATE = ("ncloud_load_balancer_ssl_certificate", "node")
+    NCLOUD_LOGIN_KEY = ("ncloud_login_key", "node")
+    NCLOUD_NAS_VOLUME = ("ncloud_nas_volume", "node")
+    NCLOUD_NAT_GATEWAY = ("ncloud_nat_gateway", "node")
+    NCLOUD_NETWORK_ACL = ("ncloud_network_acl", "node")
+    NCLOUD_NETWORK_ACL_DENY_ALLOW_GROUP = ("ncloud_network_acl_deny_allow_group", "node")
+    NCLOUD_NETWORK_ACL_RULE = ("ncloud_network_acl_rule", "node")
+    NCLOUD_NETWORK_INTERFACE = ("ncloud_network_interface", "node")
+    NCLOUD_NKS_CLUSTER = ("ncloud_nks_cluster", "node")
+    NCLOUD_NKS_NODE_POOL = ("ncloud_nks_node_pool", "node")
+    NCLOUD_PLACEMENT_GROUP = ("ncloud_placement_group", "node")
+    NCLOUD_PORT_FORWARDING_RULE = ("ncloud_port_forwarding_rule", "node")
+    NCLOUD_PUBLIC_IP = ("ncloud_public_ip", "node")
+    NCLOUD_ROUTE = ("ncloud_route", "node")
+    NCLOUD_ROUTE_TABLE = ("ncloud_route_table", "node")
+    NCLOUD_ROUTE_TABLE_ASSOCIATION = ("ncloud_route_table_association", "node")
+    NCLOUD_SERVER = ("ncloud_server", "node")
+    NCLOUD_SOURCEBUILD_PROJECT = ("ncloud_sourcebuild_project", "node")
+    NCLOUD_SOURCECOMMIT_REPOSITORY = ("ncloud_sourcecommit_repository", "node")
+    NCLOUD_SOURCEDEPLOY_PROJECT = ("ncloud_sourcedeploy_project", "node")
+    NCLOUD_SOURCEDEPLOY_PROJECT_STAGE = ("ncloud_sourcedeploy_project_stage", "node")
+    NCLOUD_SOURCEDEPLOY_PROJECT_STAGE_SCENARIO = ("ncloud_sourcedeploy_project_stage_scenario", "node")
+    NCLOUD_SOURCEPIPELINE_PROJECT = ("ncloud_sourcepipeline_project", "node")
+    NCLOUD_SUBNET = ("ncloud_subnet", "node")
+    NCLOUD_VPC = ("ncloud_vpc", "node")
+    NCLOUD_VPC_PEERING = ("ncloud_vpc_peering", "connect")
+    NCLOUD_ACCESS_CONTROL_GROUPS = ("ncloud_access_control_groups", "node")
+    NCLOUD_ACCESS_CONTROL_RULE = ("ncloud_access_control_rule", "node")
+    NCLOUD_ACCESS_CONTROL_RULES = ("ncloud_access_control_rules", "node")
+    NCLOUD_MEMBER_SERVER_IMAGE = ("ncloud_member_server_image", "node")
+    NCLOUD_MEMBER_SERVER_IMAGES = ("ncloud_member_server_images", "node")
+    NCLOUD_NAS_VOLUMES = ("ncloud_nas_volumes", "node")
+    NCLOUD_NETWORK_ACL_DENY_ALLOW_GROUPS = ("ncloud_network_acl_deny_allow_groups", "node")
+    NCLOUD_NETWORK_ACLS = ("ncloud_network_acls", "node")
+    NCLOUD_NKS_CLUSTERS = ("ncloud_nks_clusters", "node")
+    NCLOUD_NKS_KUBE_CONFIG = ("ncloud_nks_kube_config", "node")
+    NCLOUD_NKS_NODE_POOLS = ("ncloud_nks_node_pools", "node")
+    NCLOUD_NKS_VERSIONS = ("ncloud_nks_versions", "node")
+    NCLOUD_PORT_FORWARDING_RULES = ("ncloud_port_forwarding_rules", "node")
+    NCLOUD_REGIONS = ("ncloud_regions", "node")
+    NCLOUD_ROOT_PASSWORD = ("ncloud_root_password", "node")
+    NCLOUD_ROUTE_TABLES = ("ncloud_route_tables", "node")
+    NCLOUD_SERVER_IMAGE = ("ncloud_server_image", "node")
+    NCLOUD_SERVER_IMAGES = ("ncloud_server_images", "node")
+    NCLOUD_SERVER_PRODUCT = ("ncloud_server_product", "node")
+    NCLOUD_SERVER_PRODUCTS = ("ncloud_server_products", "node")
+    NCLOUD_SERVERS = ("ncloud_servers", "node")
+    NCLOUD_SOURCEBUILD_PROJECT_COMPUTES = ("ncloud_sourcebuild_project_computes", "node")
+    NCLOUD_SOURCEBUILD_PROJECT_DOCKER_ENGINES = ("ncloud_sourcebuild_project_docker_engines", "node")
+    NCLOUD_SOURCEBUILD_PROJECT_OS = ("ncloud_sourcebuild_project_os", "node")
+    NCLOUD_SOURCEBUILD_PROJECT_OS_RUNTIME_VERSIONS = ("ncloud_sourcebuild_project_os_runtime_versions", "node")
+    NCLOUD_SOURCEBUILD_PROJECT_OS_RUNTIMES = ("ncloud_sourcebuild_project_os_runtimes", "node")
+    NCLOUD_SOURCEBUILD_PROJECTS = ("ncloud_sourcebuild_projects", "node")
+    NCLOUD_SOURCECOMMIT_REPOSITORIES = ("ncloud_sourcecommit_repositories", "node")
+    NCLOUD_SUBNETS = ("ncloud_subnets", "node")
+    NCLOUD_VPCS = ("ncloud_vpcs", "node")
+    NCLOUD_ZONES = ("ncloud_zones", "node")
+
 
 class AWSResourceTuple(tuple, Enum):
     # ACM
@@ -812,10 +888,12 @@ class AWSResourceTuple(tuple, Enum):
     AWS_NETWORKMANAGER_LINK_ASSOCIATION = ("aws_networkmanager_link_association", "none")
     AWS_NETWORKMANAGER_SITE = ("aws_networkmanager_site", "none")
     AWS_NETWORKMANAGER_SITE_TO_SITE_VPN_ATTACHMENT = ("aws_networkmanager_site_to_site_vpn_attachment", "none")
-    AWS_NETWORKMANAGER_TRANSIT_GATEWAY_CONNECT_PEER_ASSOCIATION = ("aws_networkmanager_transit_gateway_connect_peer_association", "none")
+    AWS_NETWORKMANAGER_TRANSIT_GATEWAY_CONNECT_PEER_ASSOCIATION = (
+        "aws_networkmanager_transit_gateway_connect_peer_association", "none")
     AWS_NETWORKMANAGER_TRANSIT_GATEWAY_PEERING = ("aws_networkmanager_transit_gateway_peering", "none")
     AWS_NETWORKMANAGER_TRANSIT_GATEWAY_REGISTRATION = ("aws_networkmanager_transit_gateway_registration", "none")
-    AWS_NETWORKMANAGER_TRANSIT_GATEWAY_ROUTE_TABLE_ATTACHMENT = ("aws_networkmanager_transit_gateway_route_table_attachment", "none")
+    AWS_NETWORKMANAGER_TRANSIT_GATEWAY_ROUTE_TABLE_ATTACHMENT = (
+        "aws_networkmanager_transit_gateway_route_table_attachment", "none")
     AWS_NETWORKMANAGER_VPC_ATTACHMENT = ("aws_networkmanager_vpc_attachment", "none")
     # OpenSearch
     AWS_OPENSEARCH_DOMAIN = ("aws_opensearch_domain", "policy")
@@ -961,7 +1039,8 @@ class AWSResourceTuple(tuple, Enum):
     AWS_ROUTE53_RESOLVER_FIREWALL_DOMAIN_LIST = ("aws_route53_resolver_firewall_domain_list", "connect")
     AWS_ROUTE53_RESOLVER_FIREWALL_RULE = ("aws_route53_resolver_firewall_rule", "connect")
     AWS_ROUTE53_RESOLVER_FIREWALL_RULE_GROUP = ("aws_route53_resolver_firewall_rule_group", "connect")
-    AWS_ROUTE53_RESOLVER_FIREWALL_RULE_GROUP_ASSOCIATION = ("aws_route53_resolver_firewall_rule_group_association", "connect")
+    AWS_ROUTE53_RESOLVER_FIREWALL_RULE_GROUP_ASSOCIATION = (
+        "aws_route53_resolver_firewall_rule_group_association", "connect")
     AWS_ROUTE53_RESOLVER_QUERY_LOG_CONFIG = ("aws_route53_resolver_query_log_config", "connect")
     AWS_ROUTE53_RESOLVER_QUERY_LOG_CONFIG_ASSOCIATION = ("aws_route53_resolver_query_log_config_association", "connect")
     AWS_ROUTE53_RESOLVER_RULE = ("aws_route53_resolver_rule", "connect")
@@ -1083,7 +1162,8 @@ class AWSResourceTuple(tuple, Enum):
     AWS_SAGEMAKER_MODEL_PACKAGE_GROUP = ("aws_sagemaker_model_package_group", "none")
     AWS_SAGEMAKER_MODEL_PACKAGE_GROUP_POLICY = ("aws_sagemaker_model_package_group_policy", "none")
     AWS_SAGEMAKER_NOTEBOOK_INSTANCE = ("aws_sagemaker_notebook_instance", "none")
-    AWS_SAGEMAKER_NOTEBOOK_INSTANCE_LIFECYCLE_CONFIGURATION = ("aws_sagemaker_notebook_instance_lifecycle_configuration", "none")
+    AWS_SAGEMAKER_NOTEBOOK_INSTANCE_LIFECYCLE_CONFIGURATION = (
+        "aws_sagemaker_notebook_instance_lifecycle_configuration", "none")
     AWS_SAGEMAKER_PROJECT = ("aws_sagemaker_project", "none")
     AWS_SAGEMAKER_SERVICECATALOG_PORTFOLIO_STATUS = ("aws_sagemaker_servicecatalog_portfolio_status", "none")
     AWS_SAGEMAKER_STUDIO_LIFECYCLE_CONFIG = ("aws_sagemaker_studio_lifecycle_config", "none")
@@ -1107,7 +1187,8 @@ class AWSResourceTuple(tuple, Enum):
     AWS_SECURITYHUB_STANDARDS_CONTROL = ("aws_securityhub_standards_control", "none")
     AWS_SECURITYHUB_STANDARDS_SUBSCRIPTION = ("aws_securityhub_standards_subscription", "none")
     # Serverless Application Repository
-    AWS_SERVERLESSAPPLICATIONREPOSITORY_CLOUDFORMATION_STACK = ("aws_serverlessapplicationrepository_cloudformation_stack", "none")
+    AWS_SERVERLESSAPPLICATIONREPOSITORY_CLOUDFORMATION_STACK = (
+        "aws_serverlessapplicationrepository_cloudformation_stack", "none")
     AWS_SERVICECATALOG_BUDGET_RESOURCE_ASSOCIATION = ("aws_servicecatalog_budget_resource_association", "none")
     AWS_SERVICECATALOG_CONSTRAINT = ("aws_servicecatalog_constraint", "none")
     AWS_SERVICECATALOG_ORGANIZATIONS_ACCESS = ("aws_servicecatalog_organizations_access", "none")
@@ -1158,11 +1239,13 @@ class AWSResourceTuple(tuple, Enum):
     AWS_EC2_TRANSIT_GATEWAY_CONNECT = ("aws_ec2_transit_gateway_connect", "none")
     AWS_EC2_TRANSIT_GATEWAY_CONNECT_PEER = ("aws_ec2_transit_gateway_connect_peer", "none")
     AWS_EC2_TRANSIT_GATEWAY_MULTICAST_DOMAIN = ("aws_ec2_transit_gateway_multicast_domain", "none")
-    AWS_EC2_TRANSIT_GATEWAY_MULTICAST_DOMAIN_ASSOCIATION = ("aws_ec2_transit_gateway_multicast_domain_association", "none")
+    AWS_EC2_TRANSIT_GATEWAY_MULTICAST_DOMAIN_ASSOCIATION = (
+        "aws_ec2_transit_gateway_multicast_domain_association", "none")
     AWS_EC2_TRANSIT_GATEWAY_MULTICAST_GROUP_MEMBER = ("aws_ec2_transit_gateway_multicast_group_member", "none")
     AWS_EC2_TRANSIT_GATEWAY_MULTICAST_GROUP_SOURCE = ("aws_ec2_transit_gateway_multicast_group_source", "none")
     AWS_EC2_TRANSIT_GATEWAY_PEERING_ATTACHMENT = ("aws_ec2_transit_gateway_peering_attachment", "none")
-    AWS_EC2_TRANSIT_GATEWAY_PEERING_ATTACHMENT_ACCEPTER = ("aws_ec2_transit_gateway_peering_attachment_accepter", "none")
+    AWS_EC2_TRANSIT_GATEWAY_PEERING_ATTACHMENT_ACCEPTER = (
+        "aws_ec2_transit_gateway_peering_attachment_accepter", "none")
     AWS_EC2_TRANSIT_GATEWAY_POLICY_TABLE = ("aws_ec2_transit_gateway_policy_table", "none")
     AWS_EC2_TRANSIT_GATEWAY_POLICY_TABLE_ASSOCIATION = ("aws_ec2_transit_gateway_policy_table_association", "none")
     AWS_EC2_TRANSIT_GATEWAY_PREFIX_LIST_REFERENCE = ("aws_ec2_transit_gateway_prefix_list_reference", "none")
@@ -1281,7 +1364,8 @@ class AWSResourceTuple(tuple, Enum):
     AWS_BUDGETS_BUDGET_ACTION = ("aws_budgets_budget_action", "none")
     # WorkLink
     AWS_WORKLINK_FLEET = ("aws_worklink_fleet", "none")
-    AWS_WORKLINK_WEBSITE_CERTIFICATE_AUTHORITY_ASSOCIATION = ("aws_worklink_website_certificate_authority_association", "none")
+    AWS_WORKLINK_WEBSITE_CERTIFICATE_AUTHORITY_ASSOCIATION = (
+        "aws_worklink_website_certificate_authority_association", "none")
     # WorkSpaces
     AWS_WORKSPACES_DIRECTORY = ("aws_workspaces_directory", "none")
     AWS_WORKSPACES_IP_GROUP = ("aws_workspaces_ip_group", "none")
@@ -1290,4 +1374,3 @@ class AWSResourceTuple(tuple, Enum):
     AWS_XRAY_ENCRYPTION_CONFIG = ("aws_xray_encryption_config", "none")
     AWS_XRAY_GROUP = ("aws_xray_group", "none")
     AWS_XRAY_SAMPLING_RULE = ("aws_xray_sampling_rule", "none")
-
