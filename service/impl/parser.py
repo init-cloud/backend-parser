@@ -26,7 +26,7 @@ class TFParser():
 
         return self.raw_block
 
-    def get_value(self, var: str, file_path: str="/") -> str:
+    def get_value(self, var: str, file_path: str="/", is_provider=False) -> str:
 
         v = var.split(".")
 
@@ -34,13 +34,17 @@ class TFParser():
             return None
 
         if v[0] == 'var':
-            return var
+            return file_path + "\n" + var
+
+        if v[0] == 'data':
+            return file_path + "\n" + ".".join(v[0:-1])
             
         result = self.find(v, v[0])
 
-        return file_path + "\n" + result
+        if is_provider:
+            return result
 
-        
+        return file_path + "\n" + result
 
     def get_var(self, var) -> str:
         if isinstance(var, list) and var:

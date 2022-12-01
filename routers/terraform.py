@@ -5,11 +5,11 @@ from service.impl.ncp_parser import NCPParser
 def api_parser(path: str, provider: str):
 
     if provider == "aws":
-        parser = AWSParser(block=[], path=path)
+        parser = AWSParser(block=[], path=path, distinct=set())
         return parser.get_block_value()
 
     elif provider == "ncloud" or provider == "ncp":
-        parser = NCPParser(block=[], path=path)
+        parser = NCPParser(block=[], path=path, distinct=set())
         return parser.get_block_value()
 
     return []
