@@ -40,6 +40,5 @@ jobs:
         key: ${{ secrets.API_SERVER_SSH }}
         port: ${{ secrets.API_SERVER_PORT }}
         script: |
-          $DATE=$(date "+%y.%m.%d")
+          DATE=$(date "+%y.%m.%d")
           docker build . -t parser_api:$DATE
-          docker push ${{ secrets.REPOSITORY }}/parser_api:$DATE
