@@ -41,6 +41,5 @@ jobs:
         port: ${{ secrets.API_SERVER_PORT }}
         script: |
           $DATE=$(date "+%y.%m.%d")
-          docker rmi $(docker images -f "dangling=true" -q)
           docker build . -t parser_api:$DATE
           docker push ${{ secrets.REPOSITORY }}/parser_api:$DATE
