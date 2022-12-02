@@ -28,6 +28,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
     - name: Test with pytest
       run: |
         python3 -m pytest
@@ -41,5 +42,8 @@ jobs:
         port: ${{ secrets.API_SERVER_PORT }}
         script: |
           DATE=$(date "+%y.%m.%d")
-          docker build -t ${{ secrets.REPOSITORY }}/parser_api:$DATE ./backend-parser/
-          docker push ${{ secrets.REPOSITORY }}/parser_api:$DATE
+          docker login -u ${{ secrets.REGISTRY_USER }} -p ${{ secrets.REGISTRY_PW }}
+          docker build -t ${{ secrets.REGISTRY_001 }}/parser_api:$DATE ./backend-parser/
+          docker push ${{ secrets.REGISTRY_001 }}/parser_api:$DATE 
+          docker build -t ${{ secrets.REGISTRY_002 }}/parser_api ./backend-parser/   
+          docker push ${{ secrets.REGISTRY_002 }}/parser_api
