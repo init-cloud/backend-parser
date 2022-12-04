@@ -9,7 +9,7 @@ async def root():
     return {"state": "Parser on."}
 
 
-@app.get("/api/v1/{provider}/{dir}")
+@app.get("/{provider}/{dir}")
 async def parse_terraform(dir: str, provider: str) -> list: 
     res = api_parser(dir, provider=provider)
 

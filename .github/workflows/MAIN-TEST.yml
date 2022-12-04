@@ -45,5 +45,6 @@ jobs:
           docker login -u ${{ secrets.REGISTRY_USER }} -p ${{ secrets.REGISTRY_PW }}
           docker build -t ${{ secrets.REGISTRY_001 }}/parser_api:$DATE ./backend-parser/
           docker push ${{ secrets.REGISTRY_001 }}/parser_api:$DATE 
-          docker build -t ${{ secrets.REGISTRY_002 }}/parser_api ./backend-parser/   
+          docker build -t ${{ secrets.REGISTRY_002 }}/parser_api ./backend-parser/
+          docker build -t ${{ secrets.REGISTRY_002 }}/parser_api:$DATE ./backend-parser/  
           docker push ${{ secrets.REGISTRY_002 }}/parser_api
