@@ -2,6 +2,7 @@ from service.common.response_entity import PeeringResponse, Response
 from service.enum.blocks import Block
 from service.enum.blocks_tuple import NCPResourceTuple, NCPDataTuple
 from service.impl.parser import TFParser
+from service.impl.module_parser import ModuleParser
 
 
 class NCPParser(TFParser):
@@ -11,6 +12,8 @@ class NCPParser(TFParser):
         self.distinct = distinct
         self.root = root
         self.block = self.load_file()
+        mp = ModuleParser(path=path, block=self.block)
+        self.block = mp.block
 
     def get_block_value(self) -> list:
         result = []
